@@ -5,7 +5,7 @@ from datetime import datetime
 
 
 def export_csv(p):
-    with open(f'output_{p.name}.csv', 'w') as f:
+    with open(f'output/output_{p.name}.csv', 'w') as f:
         f.write('Datum;Kurs;Höchst;Tiefst;Umsatz\n')
         prev = 0
         for date, value in p.history.items():

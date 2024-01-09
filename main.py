@@ -7,6 +7,7 @@ from data import Product
 
 
 def export_csv(p):
+    """Export product history to csv file"""
     with open(f'output/output_{p.name}.csv', 'w') as f:
         f.write('Datum;Kurs;Höchst;Tiefst;Umsatz\n')
         prev = 0

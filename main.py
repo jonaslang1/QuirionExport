@@ -1,7 +1,9 @@
 import logging
+from getpass import getpass
+from datetime import datetime
+
 from api import APIClient
 from data import Product
-from datetime import datetime
 
 
 def export_csv(p):
@@ -22,7 +24,9 @@ def export_csv(p):
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
     client = APIClient()
-    client.fetch_token()
+    username = input('username:')
+    pw = getpass('password:')
+    client.fetch_token(username, pw)
     business_partner_ids = client.get_business_partner_id()
     products = []
     for business_partner_id in business_partner_ids:

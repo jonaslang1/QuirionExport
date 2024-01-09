@@ -1,3 +1,5 @@
+"""Build executable using py2exe"""
+
 import os
 import shutil
 import py2exe

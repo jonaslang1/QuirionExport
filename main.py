@@ -1,3 +1,5 @@
+"""Main module"""
+
 import logging
 from getpass import getpass
 from datetime import datetime
@@ -8,7 +10,7 @@ from data import Product
 
 def export_csv(p):
     """Export product history to csv file"""
-    with open(f'output/output_{p.name}.csv', 'w') as f:
+    with open(f'output/output_{p.name}.csv', 'w', encoding='UTF-8') as f:
         f.write('Datum;Kurs;Höchst;Tiefst;Umsatz\n')
         prev = 0
         for date, value in p.history.items():
@@ -30,10 +32,12 @@ if __name__ == '__main__':
     client.fetch_token(username, pw)
     business_partner_ids = client.get_business_partner_id()
     products = []
-    for business_partner_id in business_partner_ids:
-        res = client.get_products(business_partner_id)
+    for bp_id in business_partner_ids:
+        res = client.get_products(bp_id)
         for product in res:
-            products.append(Product(product["name"], product["ipsId"], business_partner_id, product["createdAt"]))
+            products.append(
+                Product(product["name"], product["ipsId"], bp_id, product["createdAt"])
+            )
     for product in products:
         print(product)
         res = client.get_product_history(product.business_partner_id, product.product_id)

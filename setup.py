@@ -15,4 +15,5 @@ for filename in os.listdir(folder):
     except Exception as e:
         print('Failed to delete %s. Reason: %s' % (file_path, e))
 
-py2exe.freeze(console=[{'script': 'main.py'}], options={'py2exe': {'bundle_files': 1, 'compressed': True}})
+py2exe.freeze(console=[{'script': 'main.py'}],
+              options={'py2exe': {'bundle_files': 1, 'compressed': True}})

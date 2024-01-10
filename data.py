@@ -1,5 +1,4 @@
 """Data module"""
-
 from datetime import datetime
 
 

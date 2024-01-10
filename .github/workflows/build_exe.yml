@@ -4,9 +4,8 @@ name: Build .exe file
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+     tags:
+      - 'v*'
 
 permissions:
   contents: read
@@ -28,8 +27,26 @@ jobs:
     - name: Run py2exe
       run: |
         python setup.py
-    - name: Upload as artifact
-      uses: actions/upload-artifact@v3
+    - name: Archive dist directory
+      run: |
+        zip -r QuirionExport.zip ./dist
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        name: py2exe
-        path: ./dist
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        draft: false
+        prerelease: false
+    - name: Upload Release Asset
+      id: upload-release-asset 
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./QuirionExport.zip
+        asset_name: QuirionExport-v${{ github.ref }}.zip
+        asset_content_type: application/zip

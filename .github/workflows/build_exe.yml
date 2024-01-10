@@ -1,6 +1,4 @@
-# This workflow will install Python dependencies, run py2exe
-
-name: Build .exe file
+name: Create Release
 
 on:
   push:

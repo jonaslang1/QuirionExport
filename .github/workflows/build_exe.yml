@@ -27,7 +27,7 @@ jobs:
         python setup.py
     - name: Archive dist directory
       run: |
-        zip -r QuirionExport.zip ./dist
+        Compress-Archive -Path './dist' -DestinationPath 'QuirionExport'
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1

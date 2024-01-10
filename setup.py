@@ -15,5 +15,5 @@ for filename in os.listdir(FOLDER):
     except (FileExistsError,  FileNotFoundError) as e:
         print(f'Failed to delete {file_path}. Reason: {e}')
 
-py2exe.freeze(console=[{'script': 'main.py'}],
+py2exe.freeze(console=[{'script': 'src/main.py'}],
               options={'py2exe': {'bundle_files': 1, 'compressed': True}})

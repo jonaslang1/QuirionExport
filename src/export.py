@@ -1,10 +1,14 @@
 """Export module"""
 from datetime import datetime
+import os
 
 
 def export_csv(p):
     """Export product history to csv file"""
-    with open(f'output/output_{p.name}.csv', 'w', encoding='UTF-8') as f:
+    direction = 'output'
+    if not os.path.exists(direction):
+        os.makedirs(direction)
+    with open(f'{direction}/output_{p.name}.csv', 'w', encoding='UTF-8') as f:
         f.write('Datum;Kurs;Höchst;Tiefst;Umsatz\n')
         prev = 0
         for date, value in p.history.items():

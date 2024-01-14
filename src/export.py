@@ -1,5 +1,6 @@
 """Export module"""
 from datetime import datetime
+import logging
 import os
 
 
@@ -8,6 +9,8 @@ def export_csv(p):
     direction = 'output'
     if not os.path.exists(direction):
         os.makedirs(direction)
+        logging.debug('Created directory %s', direction)
+
     with open(f'{direction}/output_{p.name}.csv', 'w', encoding='UTF-8') as f:
         f.write('Datum;Kurs;Höchst;Tiefst;Umsatz\n')
         prev = 0

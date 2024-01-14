@@ -22,10 +22,9 @@ if __name__ == '__main__':
                 Product(product["name"], product["ipsId"], bp_id, product["createdAt"])
             )
     for product in products:
-        logging.debug(f'Fetching and exporting data from {product}')
+        logging.debug('Fetching and exporting data from %s', product)
         res = client.get_product_history(product.business_partner_id, product.product_id)
         product.set_history({entry['d']: entry['v'] for entry in res["history"]})
         product.set_deposit({entry['d']: entry['v'] for entry in res["rendite"]})
         export_csv(product)
-        logging.info(f'Successfully exported data from {product}')
-
+        logging.info('Successfully exported data from %s', product)

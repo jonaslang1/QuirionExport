@@ -21,5 +21,6 @@ def export_csv(p):
             if value == prev:
                 continue
             date = datetime.strptime(date, "%Y-%m-%d").strftime('%d.%m.%Y')
-            f.write(f'{date};{value:.3f};;;\n')
+            value_str = f'{value:.3f}'.replace('.', ',')
+            f.write(f'{date};{value_str};;;\n')
             prev = value

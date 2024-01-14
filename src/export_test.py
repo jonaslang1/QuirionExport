@@ -22,7 +22,7 @@ def test_export_csv(example_product):
     with open('output/output_test.csv', 'r', encoding='UTF-8') as f:
         lines = f.read().splitlines()
         assert lines[0] == 'Datum;Kurs;Höchst;Tiefst;Umsatz'
-        assert lines[1] == '01.01.2020;100.000;;;'
-        assert lines[2] == '02.01.2020;200.000;;;'
-        assert lines[3] == '03.01.2020;300.000;;;'
+        assert lines[1] == '01.01.2020;100,000;;;'
+        assert lines[2] == '02.01.2020;200,000;;;'
+        assert lines[3] == '03.01.2020;300,000;;;'
         assert len(lines) == 4

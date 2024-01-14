@@ -14,7 +14,6 @@ def client():
 def test_get_endpoints(client):
     """Test if all endpoints are available"""
     response = client.get_endpoints()
-    print(response)
     assert response['version'] == '1.0.0'
     assert response['status'] == 'OK'
     required_endpoints = [

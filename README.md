@@ -11,5 +11,18 @@ pip install -U pyinstaller
 
 Then, you can run the following command:
 ```bash
-pyinstaller --onefile --name=QuirionExport src/main.py
+pyinstaller --onefile --specpath ./dist --name=QuirionExport src/main.py
+```
+
+## Linting
+
+Install the `pylint` package:
+```bash
+pip install pylint
+```
+
+Then, you can line all python files the following command:
+Or only new files:
+```bash
+pylint $(git ls-files '*.py')
 ```

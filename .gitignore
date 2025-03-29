@@ -3,4 +3,6 @@
 /output/
 /dist/
 /build/
+*.spec
+*_test.csv
 ```

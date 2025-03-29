@@ -1,6 +1,9 @@
 """Main module"""
 import logging
+import sys
 from getpass import getpass
+
+from requests import HTTPError
 
 from api import APIClient
 from data import Product
@@ -12,7 +15,12 @@ if __name__ == '__main__':
     client = APIClient()
     username = input('username:')
     pw = getpass('password:')
-    client.fetch_token(username, pw)
+    try:
+        client.fetch_token(username, pw)
+    except HTTPError as e:
+        logging.error('Error fetching token: %s', e)
+        input("Press Enter to exit...")
+        sys.exit(1)
     business_partner_ids = client.get_business_partner_id()
     products = []
     for bp_id in business_partner_ids:

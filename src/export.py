@@ -35,6 +35,6 @@ def save_postbox_document(document_item, content):
         logging.debug('Created directory %s', directory)
 
     pdf_bytes = base64.b64decode(content)
-    with open(f'{directory}/{document_item['fileName']}', 'wb') as f:
+    with open(f"{directory}/{document_item['fileName']}", 'wb') as f:
         f.write(pdf_bytes)
         logging.debug('Saved document %s', document_item['displayName'])

@@ -1,6 +1,7 @@
 /.idea/
 /venv/
 /output/
+/src/output/
 /dist/
 /build/
 *.spec

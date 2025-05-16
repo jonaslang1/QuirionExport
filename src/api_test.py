@@ -17,7 +17,7 @@ def test_get_endpoints(client):
     assert response['version'] == '1.0.0'
     assert response['status'] == 'OK'
     required_endpoints = [
-        'login', 'refreshToken', 'getUserV2', 'getBusinessPartnerById', 'getProductById'
+        'login', 'refreshToken', 'getUserV2', 'getBusinessPartnerById', 'getProductById', 'postbox', 'getPostboxDoc'
     ]
     for endpoint in required_endpoints:
         assert endpoint in response['endpoints']

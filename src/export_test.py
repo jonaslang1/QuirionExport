@@ -1,10 +1,12 @@
 """Tests for export module"""
+import base64
+
 # pylint: disable=redefined-outer-name
 
 import pytest
 
 from data import Product
-from export import export_csv
+from export import export_csv, save_postbox_document
 
 
 @pytest.fixture
@@ -26,3 +28,18 @@ def test_export_csv(example_product):
         assert lines[2] == '02.01.2020;200,000;;;'
         assert lines[3] == '03.01.2020;300,000;;;'
         assert len(lines) == 4
+
+
+def test_save_postbox_document():
+    """Test if postbox document is saved correctly"""
+    # This test requires a valid document item and content
+    # You can mock the document item and content for testing purposes
+    document_item = {
+        'fileName': 'test.pdf',
+        'displayName': 'Test Document'
+    }
+    content = b'Test content'
+    content_bytes = base64.b64encode(content)
+    save_postbox_document(document_item, content_bytes)
+    with open('output/documents/test.pdf', 'rb') as f:
+        assert f.read() == content

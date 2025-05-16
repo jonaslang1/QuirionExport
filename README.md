@@ -48,7 +48,7 @@ or, if built as an executable:
 The output will be saved in the [output](output) directory. 
 It generates a CSV file for each product in your Quirion account.
 Additionally,
-it can download the unread postboy documents and save them in the [output/documents](output/documents) directory.
+it can download the unread postbox documents and save them to the [output/documents](output/documents) directory.
 
 ### Options
 

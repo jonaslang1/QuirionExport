@@ -40,7 +40,7 @@ if __name__ == '__main__':
     three_months_ago = now - timedelta(days=90)
     from_date = three_months_ago.strftime('%Y-%m-%d')
     to_date = now.strftime('%Y-%m-%d')
-    postbox_items = client.get_postbox_items(status='ALL', from_date=from_date, to_date=to_date)
+    postbox_items = client.get_postbox_items(status='UNREAD', from_date=from_date, to_date=to_date)
     if len(postbox_items) > 0:
         logging.info('Found %d unread postbox items', len(postbox_items))
         input_str = input("Do you want to download the documents? (y/n): ")

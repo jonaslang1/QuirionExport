@@ -1,6 +1,7 @@
 # QuirionExport
 
-QuirionExport is a simple tool to export data from the Quirion API to a CSV file.
+QuirionExport is a simple tool to automate data retrieval from the Quirion API.
+It allows you to export your investment data into CSV files and download  documents from the postbox.
 
 ## Requirements
 

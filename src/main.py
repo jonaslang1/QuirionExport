@@ -3,6 +3,7 @@ import logging
 import sys
 from getpass import getpass
 from datetime import datetime, timedelta
+import argparse
 
 from requests import HTTPError
 
@@ -11,7 +12,12 @@ from data import Product
 from export import export_csv, save_postbox_document
 
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.DEBUG)
+    parser = argparse.ArgumentParser(description='QuirionExport')
+    parser.add_argument('--log-level', default='INFO',
+                        choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
+                        help='Set the logging level')
+    args = parser.parse_args()
+    logging.basicConfig(level=getattr(logging, args.log_level))
     client = APIClient()
     username = input('username:')
     pw = getpass('password:')

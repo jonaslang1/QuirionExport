@@ -2,13 +2,13 @@
 import logging
 import sys
 from getpass import getpass
+from datetime import datetime, timedelta
 
 from requests import HTTPError
 
 from api import APIClient
 from data import Product
-from export import export_csv
-
+from export import export_csv, save_postbox_document
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
@@ -36,3 +36,23 @@ if __name__ == '__main__':
         product.set_deposit({entry['d']: entry['v'] for entry in res["rendite"]})
         export_csv(product)
         logging.info('Successfully exported data from %s', product)
+    now = datetime.now()
+    three_months_ago = now - timedelta(days=90)
+    from_date = three_months_ago.strftime('%Y-%m-%d')
+    to_date = now.strftime('%Y-%m-%d')
+    postbox_items = client.get_postbox_items(status='ALL', from_date=from_date, to_date=to_date)
+    if len(postbox_items) > 0:
+        logging.info('Found %d unread postbox items', len(postbox_items))
+        input_str = input("Do you want to download the documents? (y/n): ")
+        if input_str.lower() != 'y':
+            logging.info('User chose not to download documents')
+            sys.exit(0)
+    else:
+        logging.info('No unread postbox items found')
+        sys.exit(0)
+    for item in postbox_items:
+        logging.debug('Fetching and downloading data from %s', item['displayName'])
+        res = client.get_postbox_document(item['id'])
+        save_postbox_document(item, res)
+        logging.info('Successfully downloaded and saved document from %s', item['displayName'])
+    logging.info('Successfully downloaded %d documents', len(postbox_items))

@@ -2,6 +2,7 @@
 from datetime import datetime
 import logging
 import os
+import base64
 
 
 def export_csv(p):
@@ -24,3 +25,16 @@ def export_csv(p):
             value_str = f'{value:.3f}'.replace('.', ',')
             f.write(f'{date};{value_str};;;\n')
             prev = value
+
+
+def save_postbox_document(document_item, content):
+    """Save postbox document to file"""
+    directory = 'output/documents'
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+        logging.debug('Created directory %s', directory)
+
+    pdf_bytes = base64.b64decode(content)
+    with open(f'{directory}/{document_item['fileName']}', 'wb') as f:
+        f.write(pdf_bytes)
+        logging.debug('Saved document %s', document_item['displayName'])

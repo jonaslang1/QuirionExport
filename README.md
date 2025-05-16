@@ -52,6 +52,8 @@ it can download the unread postbox documents and save them to the [output/docume
 
 ### Options
 
+#### Log Level
+
 You can specify a loglevel for the output. 
 The default is `INFO`, but you can set it to either `DEBUG`, `INFO`, `WARNING`, `ERROR`, or `CRITICAL`.
 ```bash

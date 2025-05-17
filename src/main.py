@@ -11,6 +11,12 @@ from api import APIClient
 from data import Product
 from export import export_csv, save_postbox_document
 
+def end_program(exit_code=0):
+    """End program"""
+    logging.debug('Program ended')
+    input("Press Enter to exit...")
+    sys.exit(exit_code)
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='QuirionExport')
     parser.add_argument('--log-level', default='INFO',
@@ -25,8 +31,7 @@ if __name__ == '__main__':
         client.fetch_token(username, pw)
     except HTTPError as e:
         logging.error('Error fetching token: %s', e)
-        input("Press Enter to exit...")
-        sys.exit(1)
+        end_program(1)
     business_partner_ids = client.get_business_partner_id()
     products = []
     for bp_id in business_partner_ids:
@@ -52,13 +57,14 @@ if __name__ == '__main__':
         input_str = input("Do you want to download the documents? (y/n): ")
         if input_str.lower() != 'y':
             logging.info('User chose not to download documents')
-            sys.exit(0)
+            end_program(0)
     else:
         logging.info('No unread postbox items found')
-        sys.exit(0)
+        end_program(0)
     for item in postbox_items:
         logging.debug('Fetching and downloading data from %s', item['displayName'])
         res = client.get_postbox_document(item['id'])
         save_postbox_document(item, res)
         logging.info('Successfully downloaded and saved document from %s', item['displayName'])
     logging.info('Successfully downloaded %d documents', len(postbox_items))
+    end_program(0)

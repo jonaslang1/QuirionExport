@@ -18,21 +18,28 @@ def end_program(exit_code=0):
     sys.exit(exit_code)
 
 if __name__ == '__main__':
+    # Logging configuration
     parser = argparse.ArgumentParser(description='QuirionExport')
     parser.add_argument('--log-level', default='INFO',
                         choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
                         help='Set the logging level')
     args = parser.parse_args()
     logging.basicConfig(level=getattr(logging, args.log_level))
+    logging.debug('Logging level set to %s', args.log_level)
+    # Set up API client
     client = APIClient()
+    # get user credentials
     username = input('username:')
     pw = getpass('password:')
+    # fetch token
     try:
         client.fetch_token(username, pw)
     except HTTPError as e:
         logging.error('Error fetching token: %s', e)
         end_program(1)
+    # get business partner ids
     business_partner_ids = client.get_business_partner_id()
+    # get products
     products = []
     for bp_id in business_partner_ids:
         res = client.get_products(bp_id)
@@ -40,6 +47,7 @@ if __name__ == '__main__':
             products.append(
                 Product(product["name"], product["ipsId"], bp_id, product["createdAt"])
             )
+    # get product history
     for product in products:
         logging.debug('Fetching and exporting data from %s', product)
         res = client.get_product_history(product.business_partner_id, product.product_id)
@@ -47,6 +55,7 @@ if __name__ == '__main__':
         product.set_deposit({entry['d']: entry['v'] for entry in res["rendite"]})
         export_csv(product)
         logging.info('Successfully exported data from %s', product)
+    # get postbox items
     now = datetime.now()
     three_months_ago = now - timedelta(days=90)
     from_date = three_months_ago.strftime('%Y-%m-%d')
@@ -61,6 +70,7 @@ if __name__ == '__main__':
     else:
         logging.info('No unread postbox items found')
         end_program(0)
+    # download postbox documents
     for item in postbox_items:
         logging.debug('Fetching and downloading data from %s', item['displayName'])
         res = client.get_postbox_document(item['id'])

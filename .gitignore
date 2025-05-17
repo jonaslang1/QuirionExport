@@ -1,5 +1,6 @@
 /.idea/
 /venv/
+/.venv/
 /output/
 /src/output/
 /dist/
@@ -7,3 +8,5 @@
 *.spec
 *_test.csv
 ```
+/.coverage
+/target/

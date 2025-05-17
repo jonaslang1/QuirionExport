@@ -24,14 +24,14 @@ def test_init(example_product):
 
 
 def test_str(example_product):
-    """Test if str repr of product is correctly"""
+    """Test if str repr of product is correct"""
     assert (
         str(example_product) == 'Product(name=name, ipsID=ipsId, created_at=2020-01-01 00:00:00)'
     )
 
 
 def test_repr(example_product):
-    """Test if str repr of product is correctly"""
+    """Test if str repr of product is correct"""
     assert (
         repr(example_product) == 'Product(name=name, ipsID=ipsId, created_at=2020-01-01 00:00:00)'
     )

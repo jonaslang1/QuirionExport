@@ -70,6 +70,12 @@ or, if you want to see the output in a more verbose format:
 ```bash
 pytest -v
 ```
+You can also run the tests with coverage:
+```bash
+pytest --cov --cov-report=html:target/coverage
+```
+This will generate an HTML report in the [target/coverage](target/coverage) directory.
+Open the [index.html](target/coverage/index.html) file in your browser to view the coverage report.
 
 ## Linting
 

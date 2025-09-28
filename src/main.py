@@ -1,5 +1,6 @@
 """Main module"""
 import logging
+import os
 import sys
 from getpass import getpass
 from datetime import datetime, timedelta
@@ -20,6 +21,7 @@ def end_program(exit_code=0):
 
 
 def main():
+    """Main function"""
     # Logging configuration
     parser = argparse.ArgumentParser(description='QuirionExport')
     parser.add_argument('--log-level', default='INFO',
@@ -39,9 +41,18 @@ def main():
     except HTTPError as e:
         logging.error('Error fetching token: %s', e)
         end_program(1)
-    # get business partner ids
     business_partner_ids = client.get_business_partner_id()
-    # get products
+    products = get_products(business_partner_ids, client)
+    get_product_history(client, products)
+    get_transactions(business_partner_ids, client)
+    postbox_items = get_postbox_items(client)
+    download_postbox_documents(client, postbox_items)
+
+    end_program(0)
+
+
+def get_products(business_partner_ids: list, client: APIClient):
+    """Get products for all business partner ids"""
     products = []
     for bp_id in business_partner_ids:
         res = client.get_products(bp_id)
@@ -49,7 +60,11 @@ def main():
             products.append(
                 Product(product["name"], product["ipsId"], bp_id, product["createdAt"])
             )
-    # get product history
+    return products
+
+
+def get_product_history(client: APIClient, products: list):
+    """Get product history for all products"""
     for product in products:
         logging.debug('Fetching and exporting data from %s', product)
         res = client.get_product_history(product.business_partner_id, product.product_id)
@@ -57,32 +72,59 @@ def main():
         product.set_deposit({entry['d']: entry['v'] for entry in res["rendite"]})
         export_csv_history(product)
         logging.info('Successfully exported data from %s', product)
-    # get transactions
-    from_date_str = input("Enter start date for transactions to "
-                          "export (DD.MM.YYYY) or press Enter to skip: ")
-    if from_date_str:
-        try:
-            day_count = (datetime.now() - datetime.strptime(from_date_str, '%d.%m.%Y')).days
+
+
+def get_transactions(business_partner_ids: list, client: APIClient):
+    """Get transactions for all business partner ids"""
+    for bp_id in business_partner_ids:
+        logging.debug('Fetching transactions for business partner id %s', bp_id)
+
+        # Check if file exists and get its modification time
+        file_path = f'output/output_Verrechnungskonto_{bp_id}.csv'
+        if os.path.exists(file_path):
+            modification_time = os.path.getmtime(file_path)
+            modification_date = datetime.fromtimestamp(modification_time)
+            day_count = (datetime.now() - modification_date).days
+            logging.info('Transaction file for business partner id %s already exists. '
+                         'Last modified %s (%d days ago).',
+                         bp_id, modification_date.strftime('%Y-%m-%d'), day_count)
+            input_str = input("Do you want to export transactions "
+                              "since last time exporting? (y/n): ")
+            if input_str.lower() != 'y':
+                logging.info('User chose not to export transactions '
+                             'for business partner id %s', bp_id)
+                continue
+        else:
+            from_date_str = input("Enter start date for transactions to "
+                                  "export (DD.MM.YYYY) or press Enter to skip: ")
+            if not from_date_str:
+                logging.info('User chose not to export transactions '
+                             'for business partner id %s', bp_id)
+            try:
+                day_count = (datetime.now() - datetime.strptime(from_date_str, '%d.%m.%Y')).days
+            except ValueError:
+                logging.error('Invalid date format. Please use DD.MM.YYYY')
+                continue
             logging.debug('User entered start date %s, '
                           'which is %d days ago', from_date_str, day_count)
-            if day_count < 1:
-                logging.error('Start date must be in the past')
-                end_program(1)
-            for bp_id in business_partner_ids:
-                logging.debug('Fetching transactions for business partner id %s', bp_id)
-                transactions = client.get_transactions(bp_id, day_count=day_count)
-                if len(transactions) == 0:
-                    logging.info('No transactions found for business partner id %s', bp_id)
-                    continue
-                else:
-                    export_csv_transactions(transactions, bp_id)
-                    logging.info('Successfully exported %d transactions for business '
-                                 'partner id %s', len(transactions), bp_id)
-        except ValueError:
-            logging.error('Invalid date format. Please use DD.MM.YYYY')
-            end_program(1)
 
-    # get postbox items
+        if day_count < 1:
+            logging.error('Start date must be in the past')
+            continue
+
+        transactions = client.get_transactions(bp_id, day_count=day_count)
+        if len(transactions) == 0:
+            logging.info('No transactions found for business partner '
+                         'id %s in the last %d days', bp_id, day_count)
+            continue
+
+        export_csv_transactions(transactions, bp_id)
+        logging.info('Successfully exported %d transactions for business '
+                     'partner id %s', len(transactions), bp_id)
+
+
+def get_postbox_items(client: APIClient):
+    """Get unread postbox items from the last three months"""
     now = datetime.now()
     three_months_ago = now - timedelta(days=90)
     from_date = three_months_ago.strftime('%Y-%m-%d')
@@ -97,19 +139,22 @@ def main():
     else:
         logging.info('No unread postbox items found')
         end_program(0)
-    # download postbox documents
+    return postbox_items
+
+
+def download_postbox_documents(client: APIClient, postbox_items):
+    """Download postbox documents"""
     for item in postbox_items:
         logging.debug('Fetching and downloading data from %s', item['displayName'])
         res = client.get_postbox_document(item['id'])
         save_postbox_document(item, res)
         logging.info('Successfully downloaded and saved document from %s', item['displayName'])
     logging.info('Successfully downloaded %d documents', len(postbox_items))
-    end_program(0)
 
 
 if __name__ == '__main__':
     try:
         main()
-    except Exception as e:
+    except Exception as e: # pylint: disable=broad-except
         logging.critical('Unhandled exception: %s', e, exc_info=True)
         end_program(1)

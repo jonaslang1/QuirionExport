@@ -19,7 +19,7 @@ def end_program(exit_code=0):
     sys.exit(exit_code)
 
 
-if __name__ == '__main__':
+def main():
     # Logging configuration
     parser = argparse.ArgumentParser(description='QuirionExport')
     parser.add_argument('--log-level', default='INFO',
@@ -71,9 +71,13 @@ if __name__ == '__main__':
             for bp_id in business_partner_ids:
                 logging.debug('Fetching transactions for business partner id %s', bp_id)
                 transactions = client.get_transactions(bp_id, day_count=day_count)
-                export_csv_transactions(transactions, bp_id)
-                logging.info('Successfully exported %d transactions for business '
-                             'partner id %s', len(transactions), bp_id)
+                if len(transactions) == 0:
+                    logging.info('No transactions found for business partner id %s', bp_id)
+                    continue
+                else:
+                    export_csv_transactions(transactions, bp_id)
+                    logging.info('Successfully exported %d transactions for business '
+                                 'partner id %s', len(transactions), bp_id)
         except ValueError:
             logging.error('Invalid date format. Please use DD.MM.YYYY')
             end_program(1)
@@ -101,3 +105,11 @@ if __name__ == '__main__':
         logging.info('Successfully downloaded and saved document from %s', item['displayName'])
     logging.info('Successfully downloaded %d documents', len(postbox_items))
     end_program(0)
+
+
+if __name__ == '__main__':
+    try:
+        main()
+    except Exception as e:
+        logging.critical('Unhandled exception: %s', e, exc_info=True)
+        end_program(1)

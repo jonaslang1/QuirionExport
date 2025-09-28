@@ -10,6 +10,39 @@ It allows you to export your investment data into CSV files and download  docume
 
 ## Installation
 
+Download the executable from the [releases](https://github.com/jonaslang1/QuirionExport/releases/latest) page or build it from source.
+
+## Usage
+
+1. Run the executable by double-clicking it or from the command line:
+```bash
+./dist/QuirionExport
+```
+2. Run the tool from the command line:
+```bash
+python src/main.py
+```
+
+### Output
+
+The output will be saved in the [output](output) directory.
+It generates a CSV file for each product in your Quirion account.
+Use the [ImportVorlagen.dat](ImportVorlagen.dat) template file to import the import templates into your financial software to facilitate the import of the generated CSV files.
+Additionally,
+it can download the unread postbox documents and save them to the [output/documents](output/documents) directory.
+
+### Options
+
+#### Log Level
+
+You can specify a loglevel for the output.
+The default is `INFO`, but you can set it to either `DEBUG`, `INFO`, `WARNING`, `ERROR`, or `CRITICAL`.
+```bash
+python src/main.py --log-level DEBUG
+```
+
+## Contribute
+
 1. Clone the repository:
    ```bash
    git clone https://github.com/jonaslang1/QuirionExport
@@ -33,32 +66,6 @@ It allows you to export your investment data into CSV files and download  docume
    ```
 
 The executable will be available in the [dist](dist) directory.
-
-## Usage
-
-Run the tool from the command line:
-```bash
-python src/main.py
-```
-or, if built as an executable:
-```bash
-./dist/QuirionExport
-```
-
-The output will be saved in the [output](output) directory. 
-It generates a CSV file for each product in your Quirion account.
-Additionally,
-it can download the unread postbox documents and save them to the [output/documents](output/documents) directory.
-
-### Options
-
-#### Log Level
-
-You can specify a loglevel for the output. 
-The default is `INFO`, but you can set it to either `DEBUG`, `INFO`, `WARNING`, `ERROR`, or `CRITICAL`.
-```bash
-python src/main.py --log-level DEBUG
-```
 
 ## Testing
 

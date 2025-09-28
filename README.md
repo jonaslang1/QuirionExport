@@ -6,7 +6,7 @@ It allows you to export your investment data into CSV files and download  docume
 ## Requirements
 
 - Python 3.8 or higher
-- Access to the Quirion API (API key or credentials if required)
+- Access to the Quirion API (credentials are required)
 
 ## Installation
 

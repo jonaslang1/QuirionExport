@@ -10,6 +10,7 @@ class APIClient:
     def __init__(self):
         """Initialize API Client"""
         self.base_url = 'https://api.it-aws-prod.quirion.de/legacy/v1'
+        self.session = None
         self.access_token = None
         self.refresh_token = None
         self.id_token = None
@@ -87,6 +88,32 @@ class APIClient:
         response = self.rest_call(
             'POST',
             '/auth/token',
+            options={'json_data': json_data}
+        )
+        response.raise_for_status()
+        if response.json().get("challengeName") == "SMS_MFA":
+            logging.info("MFA required")
+            self.session = response.json().get("session")
+            return False
+        self.access_token = response.json()["AuthenticationResult"]["AccessToken"]
+        self.refresh_token = response.json()["AuthenticationResult"]["RefreshToken"]
+        self.id_token = response.json()["AuthenticationResult"]["IdToken"]
+        self.expires_in = response.json()["AuthenticationResult"]["ExpiresIn"]
+        return True
+
+    def handle_mfa(self, mfa_code, username):
+        """Handle MFA for quirion API"""
+        logging.debug('Handling MFA with code %s', mfa_code)
+        json_data = {
+            'challenge': 'SMS_MFA',
+            'code': mfa_code,
+            'session': self.session,
+            'username': username,
+        }
+
+        response = self.rest_call(
+            'POST',
+            '/auth/challenge',
             options={'json_data': json_data}
         )
         response.raise_for_status()

@@ -37,10 +37,13 @@ def main():
     pw = getpass('password:')
     # fetch token
     try:
-        client.fetch_token(username, pw)
-    except HTTPError as e:
-        logging.error('Error fetching token: %s', e)
+        if not client.fetch_token(username, pw):
+            mfa_code = input('MFA code:')
+            client.handle_mfa(mfa_code, username)
+    except HTTPError as error:
+        logging.error('Error fetching token: %s', error)
         end_program(1)
+    logging.info('Successfully fetched access token')
     business_partner_ids = client.get_business_partner_id()
     products = get_products(business_partner_ids, client)
     get_product_history(client, products)

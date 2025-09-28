@@ -9,13 +9,15 @@ from requests import HTTPError
 
 from api import APIClient
 from data import Product
-from export import export_csv, save_postbox_document
+from export import export_csv_history, save_postbox_document, export_csv_transactions
+
 
 def end_program(exit_code=0):
     """End program"""
     logging.debug('Program ended')
     input("Press Enter to exit...")
     sys.exit(exit_code)
+
 
 if __name__ == '__main__':
     # Logging configuration
@@ -53,8 +55,29 @@ if __name__ == '__main__':
         res = client.get_product_history(product.business_partner_id, product.product_id)
         product.set_history({entry['d']: entry['v'] for entry in res["history"]})
         product.set_deposit({entry['d']: entry['v'] for entry in res["rendite"]})
-        export_csv(product)
+        export_csv_history(product)
         logging.info('Successfully exported data from %s', product)
+    # get transactions
+    from_date_str = input("Enter start date for transactions to "
+                          "export (DD.MM.YYYY) or press Enter to skip: ")
+    if from_date_str:
+        try:
+            day_count = (datetime.now() - datetime.strptime(from_date_str, '%d.%m.%Y')).days
+            logging.debug('User entered start date %s, '
+                          'which is %d days ago', from_date_str, day_count)
+            if day_count < 1:
+                logging.error('Start date must be in the past')
+                end_program(1)
+            for bp_id in business_partner_ids:
+                logging.debug('Fetching transactions for business partner id %s', bp_id)
+                transactions = client.get_transactions(bp_id, day_count=day_count)
+                export_csv_transactions(transactions, bp_id)
+                logging.info('Successfully exported %d transactions for business '
+                             'partner id %s', len(transactions), bp_id)
+        except ValueError:
+            logging.error('Invalid date format. Please use DD.MM.YYYY')
+            end_program(1)
+
     # get postbox items
     now = datetime.now()
     three_months_ago = now - timedelta(days=90)
@@ -66,7 +89,7 @@ if __name__ == '__main__':
         input_str = input("Do you want to download the documents? (y/n): ")
         if input_str.lower() != 'y':
             logging.info('User chose not to download documents')
-            end_program(0)
+        end_program(0)
     else:
         logging.info('No unread postbox items found')
         end_program(0)

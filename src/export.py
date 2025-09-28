@@ -5,12 +5,17 @@ import os
 import base64
 
 
-def export_csv(p):
+def create_dir_if_not_exists(path):
+    """Create directory if it does not exist"""
+    if not os.path.exists(path):
+        os.makedirs(path)
+        logging.debug('Created directory %s', path)
+
+
+def export_csv_history(p):
     """Export product history to csv file"""
     direction = 'output'
-    if not os.path.exists(direction):
-        os.makedirs(direction)
-        logging.debug('Created directory %s', direction)
+    create_dir_if_not_exists(direction)
 
     with open(f'{direction}/output_{p.name}.csv', 'w', encoding='UTF-8') as f:
         f.write('Datum;Kurs;Höchst;Tiefst;Umsatz\n')
@@ -27,12 +32,33 @@ def export_csv(p):
             prev = value
 
 
+def export_csv_transactions(transactions, bp_id):
+    """Export transactions to csv file"""
+    direction = 'output'
+    create_dir_if_not_exists(direction)
+
+    with open(f'{direction}/output_Verrechnungskonto_{bp_id}.csv', 'w', encoding='UTF-8') as f:
+        f.write('Buchungsdatum;Wertstellungsdatum;Betrag;Verwendungszweck\n')
+        for transaction in transactions:
+            booking_date = datetime.strptime(transaction['bookingDate'], "%Y-%m-%d"
+                                             ).strftime('%d.%m.%Y')
+            value_date = datetime.strptime(transaction['valutaDate'], "%Y-%m-%d"
+                                           ).strftime('%d.%m.%Y')
+            amount = f"{transaction['amount']:.2f}".replace('.', ',')
+            order_type = transaction['orderType']
+            if '(' in order_type:
+                order_type_str = order_type.split('(')[0][:-1]
+            else:
+                order_type_str = order_type
+            purpose = (f"{transaction['type']} - {order_type_str}"
+                       f" - {transaction['Verwendungszweck']}")
+            f.write(f'{booking_date};{value_date};{amount};{purpose}\n')
+
+
 def save_postbox_document(document_item, content):
     """Save postbox document to file"""
     directory = 'output/documents'
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-        logging.debug('Created directory %s', directory)
+    create_dir_if_not_exists(directory)
 
     pdf_bytes = base64.b64decode(content)
     with open(f"{directory}/{document_item['fileName']}", 'wb') as f:

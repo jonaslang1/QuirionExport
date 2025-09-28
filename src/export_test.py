@@ -6,7 +6,16 @@ import base64
 import pytest
 
 from data import Product
-from export import export_csv, save_postbox_document
+from export import export_csv_history, save_postbox_document, export_csv_transactions, create_dir_if_not_exists
+
+
+def test_create_dir_if_not_exists(tmp_path):
+    """Test if directory is created if it does not exist"""
+    test_dir = tmp_path / "test_dir"
+    assert not test_dir.exists()
+    create_dir_if_not_exists(test_dir)
+    assert test_dir.exists()
+    assert test_dir.is_dir()
 
 
 @pytest.fixture
@@ -18,9 +27,9 @@ def example_product():
     return product
 
 
-def test_export_csv(example_product):
+def test_export_csv_history(example_product):
     """Test if csv export is correct"""
-    export_csv(example_product)
+    export_csv_history(example_product)
     with open('output/output_test.csv', 'r', encoding='UTF-8') as f:
         lines = f.read().splitlines()
         assert lines[0] == 'Datum;Kurs;Höchst;Tiefst;Umsatz'
@@ -43,3 +52,47 @@ def test_save_postbox_document():
     save_postbox_document(document_item, content_bytes)
     with open('output/documents/test.pdf', 'rb') as f:
         assert f.read() == content
+
+
+@pytest.fixture
+def example_transactions():
+    """Transactions fixture"""
+    return [
+        {
+            "amount": 20000,
+            "orderType": "Gutschrift (1040)",
+            "currency": "EUR",
+            "createdAt": "2023-04-11T07:03:53.892Z",
+            "metaType": "Zahlungseingang (30)",
+            "Verwendungszweck": "Zahlungseingang",
+            "valutaDate": "2023-04-06",
+            "bookingDate": "2023-04-06",
+            "status": "CLOSED",
+            "type": "Überweisungseingang"
+        },
+        {
+            "amount": 135.59,
+            "orderType": "Zinszahlung (161)",
+            "currency": "EUR",
+            "createdAt": "2023-07-03T07:04:12.489Z",
+            "metaType": "Zins (16)",
+            "Verwendungszweck": "31.03.23-30.06.23",
+            "valutaDate": "2023-06-30",
+            "bookingDate": "2023-06-30",
+            "status": "CLOSED",
+            "type": "Transaktion"
+        },
+    ]
+
+
+def test_export_csv_transactions(example_transactions):
+    """Test if transactions csv export is correct"""
+    export_csv_transactions(example_transactions, "bpId")
+    with open('output/output_Verrechnungskonto_bpId.csv', 'r', encoding='UTF-8') as f:
+        lines = f.read().splitlines()
+        assert lines[0] == 'Buchungsdatum;Wertstellungsdatum;Betrag;Verwendungszweck'
+        assert lines[1] == ('06.04.2023;06.04.2023;20000,00;'
+                            'Überweisungseingang - Gutschrift - Zahlungseingang')
+        assert lines[2] == ('30.06.2023;30.06.2023;135,59;'
+                            'Transaktion - Zinszahlung - 31.03.23-30.06.23')
+        assert len(lines) == 3

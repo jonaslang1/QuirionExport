@@ -1,0 +1,94 @@
+<?xml version="1.0"?>
+<QPROFILES>
+	<INFO VERSION="1">
+		<DATUM>TT.MM.JJJJ</DATUM>
+		<WAEHRUNG>
+			<DEZIMAL>,</DEZIMAL>
+			<TAUSENDER>.</TAUSENDER>
+			<NAME>EURO</NAME>
+			<ZEICHEN>€</ZEICHEN>
+		</WAEHRUNG>
+	</INFO>
+	<PROFILES>
+		<ITEM>
+			<Name>Quirion Kurse Nachhaltig</Name>
+			<Type>2</Type>
+			<Format>TXT</Format>
+			<Steps>4</Steps>
+			<Filter>Text- oder CSV-Datei (*.txt;*.csv)|*.txt;*.csv</Filter>
+			<Description></Description>
+			<CurrencyFormat>COMMA</CurrencyFormat>
+			<DateFormat>TT.MM.JJJJ</DateFormat>
+			<FieldSeparator>NONE</FieldSeparator>
+			<Divider>SEMICOLON</Divider>
+			<TextDivider></TextDivider>
+			<StartInRow>1</StartInRow>
+			<Style>FLOATING</Style>
+			<FieldNames>KNOWN</FieldNames>
+			<Table>SECURITYDATA</Table>
+			<Source>C:\Users\jonas\AppData\Local\QuirionExport\output\output_Nachhaltiges Portfolio.csv</Source>
+			<AddressOverwrite></AddressOverwrite>
+			<Targetname>Nachhaltiges Portfolio 70 % Aktien / 30 % Anleihen</Targetname><Targetid>222222222222</Targetid>
+			<ColumnPositions></ColumnPositions>
+			<ColumnAssignments>2</ColumnAssignments>
+			<Columns>
+				<Col><Target>1</Target><Source1>0</Source1><Source2>-1</Source2></Col>
+				<Col><Target>2</Target><Source1>1</Source1><Source2>-1</Source2></Col>
+			</Columns>
+		</ITEM>
+		<ITEM>
+			<Name>Quirion Kurse Global</Name>
+			<Type>2</Type>
+			<Format>TXT</Format>
+			<Steps>4</Steps>
+			<Filter>Text- oder CSV-Datei (*.txt;*.csv)|*.txt;*.csv</Filter>
+			<Description></Description>
+			<CurrencyFormat>COMMA</CurrencyFormat>
+			<DateFormat>TT.MM.JJJJ</DateFormat>
+			<FieldSeparator>NONE</FieldSeparator>
+			<Divider>SEMICOLON</Divider>
+			<TextDivider></TextDivider>
+			<StartInRow>1</StartInRow>
+			<Style>FLOATING</Style>
+			<FieldNames>KNOWN</FieldNames>
+			<Table>SECURITYDATA</Table>
+			<Source>C:\Users\jonas\AppData\Local\QuirionExport\output\output_Globales Portfolio.csv</Source>
+			<AddressOverwrite></AddressOverwrite>
+			<Targetname>Globales Portfolio 70 % Aktien / 30 % Anleihen</Targetname><Targetid>111111111111</Targetid>
+			<ColumnPositions></ColumnPositions>
+			<ColumnAssignments>2</ColumnAssignments>
+			<Columns>
+				<Col><Target>1</Target><Source1>0</Source1><Source2>-1</Source2></Col>
+				<Col><Target>2</Target><Source1>1</Source1><Source2>-1</Source2></Col>
+			</Columns>
+		</ITEM>
+		<ITEM>
+			<Name>Quirion Verrechnungskonto</Name>
+			<Type>2</Type>
+			<Format>TXT</Format>
+			<Steps>4</Steps>
+			<Filter>Text- oder CSV-Datei (*.txt;*.csv)|*.txt;*.csv</Filter>
+			<Description>Importiert die Buchungen des Verrechnungskontos mithilfe der .csv-Datei des Tools QuirionExport.</Description>
+			<CurrencyFormat>COMMA</CurrencyFormat>
+			<DateFormat>TT.MM.JJJJ</DateFormat>
+			<FieldSeparator>DOUBLEQUOTE</FieldSeparator>
+			<Divider>SEMICOLON</Divider>
+			<TextDivider></TextDivider>
+			<StartInRow>1</StartInRow>
+			<Style>FLOATING</Style>
+			<FieldNames>KNOWN</FieldNames>
+			<Table>TRANSACTION</Table>
+			<Source>C:\Users\jonas\AppData\Local\QuirionExport\output\output_Verrechnungskonto_86783900.csv</Source>
+			<AddressOverwrite></AddressOverwrite>
+			<Targetname>Quirin Verrechnungskonto</Targetname><Targetid>19</Targetid>
+			<ColumnPositions></ColumnPositions>
+			<ColumnAssignments>4</ColumnAssignments>
+			<Columns>
+				<Col><Target>0</Target><Source1>0</Source1><Source2>-1</Source2></Col>
+				<Col><Target>1</Target><Source1>1</Source1><Source2>-1</Source2></Col>
+				<Col><Target>4</Target><Source1>2</Source1><Source2>-1</Source2></Col>
+				<Col><Target>8</Target><Source1>3</Source1><Source2>-1</Source2></Col>
+			</Columns>
+		</ITEM>
+	</PROFILES>
+</QPROFILES>

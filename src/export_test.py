@@ -6,7 +6,8 @@ import base64
 import pytest
 
 from data import Product
-from export import export_csv_history, save_postbox_document, export_csv_transactions, create_dir_if_not_exists
+from export import (export_csv_history, save_postbox_document,
+                    export_csv_transactions, create_dir_if_not_exists)
 
 
 def test_create_dir_if_not_exists(tmp_path):

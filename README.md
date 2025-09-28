@@ -52,6 +52,8 @@ python src/main.py --log-level DEBUG
    ```bash
    pip install -r requirements.txt
    ```
+   
+Feel free to open issues, submit pull requests or fork the repository.
 
 ## Generate the Executable
 

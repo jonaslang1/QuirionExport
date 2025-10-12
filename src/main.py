@@ -138,7 +138,7 @@ def get_postbox_items(client: APIClient):
         input_str = input("Do you want to download the documents? (y/n): ")
         if input_str.lower() != 'y':
             logging.info('User chose not to download documents')
-        end_program(0)
+            end_program(0)
     else:
         logging.info('No unread postbox items found')
         end_program(0)

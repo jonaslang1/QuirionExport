@@ -119,7 +119,6 @@ def get_transactions(business_partner_ids: list, client: APIClient):
         if len(transactions) == 0:
             logging.info('No transactions found for business partner '
                          'id %s in the last %d days', bp_id, day_count)
-            continue
 
         export_csv_transactions(transactions, bp_id)
         logging.info('Successfully exported %d transactions for business '
